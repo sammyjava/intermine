@@ -89,7 +89,7 @@ public class JSONResultsIterator implements Iterator<JSONObject>
             List<ResultElement> result = subIter.next();
             // HACK: create a fake id for simple objects which don't have them
             for (ResultElement cell : result) {
-                if (cell.getId() == null) {
+                if (cell != null && cell.getId() == null) {
                     cell.setSimpleCellId();
                 }
             }
