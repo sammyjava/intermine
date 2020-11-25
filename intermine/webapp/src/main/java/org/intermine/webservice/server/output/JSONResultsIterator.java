@@ -233,10 +233,10 @@ public class JSONResultsIterator implements Iterator<JSONObject>
             Object mapId = jsonMap.get(ID_KEY);
             if (cellId != null && mapId != null && !jsonMap.get(ID_KEY).equals(cell.getId())) {
                 throw new JSONFormattingException(
-                                                  "This result element (" + cell +
-                                                  ") does not belong on this map (" + jsonMap
-                                                  + ") - objectIds don't match (" +
-                                                  jsonMap.get(ID_KEY) + " != " + cell.getId()
+                                                  "This result element (" + cell
+                                                  + ") does not belong on this map (" + jsonMap
+                                                  + ") - objectIds don't match ("
+                                                  + jsonMap.get(ID_KEY) + " != " + cell.getId()
                                                   + ")");
             }
         } else {
