@@ -36,28 +36,25 @@ import org.apache.log4j.Logger;
 
 /**
  * Task to convert gff3 data
- *
  * @author Wenyan Ji
- * @author Sam Hokin
  */
 public class GFF3ConverterTask extends Task
 {
     protected static final Logger LOG = Logger.getLogger(GFF3ConverterTask.class);
 
     protected FileSet fileSet;
-    protected String converter, targetAlias, seqClsName, orgTaxonId, strainIdentifier, assemblyVersion, annotationVersion;
+    protected String converter, targetAlias, seqClsName, orgTaxonId;
     protected String seqDataSourceName, model, handlerClassName;
     protected GFF3Parser parser;
 
-    private String dataSourceName, dataSourceDescription, dataSourceUrl;
-
-    private String dataSetTitle, dataSetDescription, dataSetUrl, dataSetVersion, licence;
+    private String dataSourceName;
+    private String dataSetTitle, licence;
 
     private String seqHandlerClassName;
 
     private boolean dontCreateLocations = false;
 
-    /**
+     /**
      * Set the data fileset
      * @param fs the fileset
      */
@@ -83,7 +80,7 @@ public class GFF3ConverterTask extends Task
     }
 
 
-    /**
+     /**
      * Set the sequenceClassName
      * @param seqClsName the seqClsName;
      */
@@ -101,30 +98,6 @@ public class GFF3ConverterTask extends Task
     }
 
     /**
-     * Set the strain identifier
-     * @param strainIdentifier the strain.identifier
-     */
-    public void setStrainIdentifier(String strainIdentifier) {
-        this.strainIdentifier = strainIdentifier;
-    }
-
-    /**
-     * Set the assembly version
-     * @param assemblyVersion the assembly version
-     */
-    public void setAssemblyVersion(String assemblyVersion) {
-        this.assemblyVersion = assemblyVersion;
-    }
-
-    /**
-     * Set the annotation version
-     * @param annotationVersion the annotation version
-     */
-    public void setAnnotationVersion(String annotationVersion) {
-        this.annotationVersion = annotationVersion;
-    }
-
-    /**
      * Set the dataSourceName
      * @param dataSourceName the dataSourceName
      */
@@ -133,27 +106,11 @@ public class GFF3ConverterTask extends Task
     }
 
     /**
-     * Set the dataSourceDescription
-     * @param dataSourceDescription the dataSourceDescription
-     */
-    public void setDataSourceDescription(String dataSourceDescription) {
-        this.dataSourceDescription = dataSourceDescription;
-    }
-
-    /**
-     * Set the dataSourceUrl
-     * @param dataSourceUrl the dataSourceUrl
-     */
-    public void setDataSourceUrl(String dataSourceUrl) {
-        this.dataSourceUrl = dataSourceUrl;
-    }
-
-    /**
      * Set the seqDataSourceName
      * @param seqDataSourceName the seqDataSourceName
      */
     public void setSeqDataSourceName(String seqDataSourceName) {
-	this.seqDataSourceName = seqDataSourceName;
+        this.seqDataSourceName = seqDataSourceName;
     }
 
     /**
@@ -161,7 +118,7 @@ public class GFF3ConverterTask extends Task
      * @param dataSetTitle the DataSet title
      */
     public void setDataSetTitle(String dataSetTitle) {
-	this.dataSetTitle = dataSetTitle;
+        this.dataSetTitle = dataSetTitle;
     }
 
     /**
@@ -170,30 +127,6 @@ public class GFF3ConverterTask extends Task
      */
     public void setLicence(String licence) {
         this.licence = licence;
-    }
-
-    /**
-     * Set the dataSetUrl
-     * @param dataSetUrl the DataSet URL
-     */
-    public void setDataSetUrl(String dataSetUrl) {
-        this.dataSetUrl = dataSetUrl;
-    }
-
-    /**
-     * Set the dataSetVersion
-     * @param dataSetVersion the DataSet version
-     */
-    public void setDataSetVersion(String dataSetVersion) {
-        this.dataSetVersion = dataSetVersion;
-    }
-
-    /**
-     * Set the dataSetDescription
-     * @param dataSetDescription the DataSet description
-     */
-    public void setDataSetDescription(String dataSetDescription) {
-        this.dataSetDescription = dataSetDescription;
     }
 
     /**
@@ -249,12 +182,12 @@ public class GFF3ConverterTask extends Task
         if (orgTaxonId == null) {
             throw new BuildException("orgTaxonId attribute not set");
         }
-        if (strainIdentifier == null) {
-            throw new BuildException("strainIdentifier attribute not set");
-        }
         if (dataSourceName == null) {
             throw new BuildException("dataSourceName attribute not set");
         }
+//        if (seqDataSourceName == null) {
+//            throw new BuildException("seqDataSourceName attribute not set");
+//        }
         if (dataSetTitle == null) {
             throw new BuildException("dataSetTitle attribute not set");
         }
@@ -280,7 +213,8 @@ public class GFF3ConverterTask extends Task
                 }
                 Class<?> [] types = new Class[] {Model.class};
                 Object [] args = new Object[] {tgtModel};
-                recordHandler = (GFF3RecordHandler) handlerClass.getConstructor(types).newInstance(args);
+                recordHandler =
+                    (GFF3RecordHandler) handlerClass.getConstructor(types).newInstance(args);
             }
             GFF3SeqHandler sequenceHandler;
             if (StringUtils.isEmpty(seqHandlerClassName)) {
@@ -294,14 +228,13 @@ public class GFF3ConverterTask extends Task
                 }
                 Class<?> [] types = new Class[] {};
                 Object [] args = new Object[] {};
-                sequenceHandler = (GFF3SeqHandler) handlerClass.getConstructor(types).newInstance(args);
+                sequenceHandler =
+                    (GFF3SeqHandler) handlerClass.getConstructor(types).newInstance(args);
             }
 
-            GFF3Converter gff3converter = new GFF3Converter(writer, seqClsName,
-							    orgTaxonId, strainIdentifier, assemblyVersion, annotationVersion,
-							    dataSourceName, dataSourceUrl,
-							    dataSetTitle, dataSetUrl, dataSetVersion, dataSetDescription,
-							    tgtModel, recordHandler, sequenceHandler, licence);
+            GFF3Converter gff3converter =
+                new GFF3Converter(writer, seqClsName, orgTaxonId, dataSourceName,
+                                  dataSetTitle, tgtModel, recordHandler, sequenceHandler, licence);
             if (dontCreateLocations) {
                 gff3converter.setDontCreateLocations(dontCreateLocations);
             }

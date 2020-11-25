@@ -76,9 +76,9 @@ public class GoConverter extends BioFileConverter
     private Map<String, Integer> storedProductIds;
 
     // These should be altered for different ontologies:
-    protected String termClassName = "OntologyTerm";
-    protected String termCollectionName = "ontologyAnnotation";
-    protected String annotationClassName = "OntologyAnnotation";
+    protected String termClassName = "GOTerm";
+    protected String termCollectionName = "goAnnotation";
+    protected String annotationClassName = "GOAnnotation";
     private static final String DEFAULT_ANNOTATION_TYPE = "gene";
     private static final String DEFAULT_IDENTIFIER_FIELD = "primaryIdentifier";
     protected IdResolver rslv;
@@ -86,7 +86,7 @@ public class GoConverter extends BioFileConverter
     private String datasource, dataset, licence;
     private String datasetRefId = null;
     private static final Logger LOG = Logger.getLogger(GoConverter.class);
-    private static final String GO_ANNOTATION_NAME = "Ontology Annotation";
+    private static final String GO_ANNOTATION_NAME = "GO Annotation";
 
     /**
      * Constructor
@@ -143,7 +143,7 @@ public class GoConverter extends BioFileConverter
 
         String datasourceRefId = getDataSource(datasource);
 
-        return getDataSet(dataset, datasourceRefId, null, licence);
+        return getDataSet(dataset, datasourceRefId, licence);
     }
 
     private void storeDataset() throws ObjectStoreException {
@@ -157,7 +157,7 @@ public class GoConverter extends BioFileConverter
 
         String datasourceRefId = getDataSource(datasource);
 
-        getDataSet(dataset, datasourceRefId, null, licence);
+        getDataSet(dataset, datasourceRefId, licence);
     }
 
     static {
@@ -225,7 +225,7 @@ public class GoConverter extends BioFileConverter
             String name = line[1];
             String url = line[2];
 
-            Item item = createItem("OntologyEvidenceCode");
+            Item item = createItem("GOEvidenceCode");
             item.setAttribute("code", code);
             item.setAttribute("name", name);
             item.setAttribute("url", url);
@@ -362,17 +362,17 @@ public class GoConverter extends BioFileConverter
         for (Map.Entry<Integer, List<String>> entry : productCollectionsMap.entrySet()) {
             Integer storedProductId = entry.getKey();
             List<String> annotationIds = entry.getValue();
-            ReferenceList ontologyAnnotation = new ReferenceList(termCollectionName, annotationIds);
-            store(ontologyAnnotation, storedProductId);
+            ReferenceList goAnnotation = new ReferenceList(termCollectionName, annotationIds);
+            store(goAnnotation, storedProductId);
         }
     }
 
     private void storeEvidence() throws ObjectStoreException {
         for (Set<Evidence> annotationEvidence : goTermGeneToEvidence.values()) {
             List<String> evidenceRefIds = new ArrayList<String>();
-            Integer ontologyAnnotationRefId = null;
+            Integer goAnnotationRefId = null;
             for (Evidence evidence : annotationEvidence) {
-                Item goevidence = createItem("OntologyEvidence");
+                Item goevidence = createItem("GOEvidence");
                 goevidence.setReference("code", evidenceCodes.get(evidence.getEvidenceCode()));
                 List<String> publicationEvidence = evidence.getPublications();
                 if (!publicationEvidence.isEmpty()) {
@@ -390,46 +390,46 @@ public class GoConverter extends BioFileConverter
 
                 store(goevidence);
                 evidenceRefIds.add(goevidence.getIdentifier());
-                ontologyAnnotationRefId = evidence.getStoredAnnotationId();
+                goAnnotationRefId = evidence.getStoredAnnotationId();
             }
 
             ReferenceList refIds = new ReferenceList("evidence",
                     new ArrayList<String>(evidenceRefIds));
-            store(refIds, ontologyAnnotationRefId);
+            store(refIds, goAnnotationRefId);
         }
     }
 
     private Integer createGoAnnotation(String productIdentifier, String productType,
             String termIdentifier, String qualifier, String annotationExtension)
             throws ObjectStoreException {
-        Item ontologyAnnotation = createItem(annotationClassName);
-        ontologyAnnotation.setReference("subject", productIdentifier);
-        ontologyAnnotation.setReference("ontologyTerm", termIdentifier);
-        ontologyAnnotation.addToCollection("dataSets", datasetRefId);
+        Item goAnnotation = createItem(annotationClassName);
+        goAnnotation.setReference("subject", productIdentifier);
+        goAnnotation.setReference("ontologyTerm", termIdentifier);
+        goAnnotation.addToCollection("dataSets", datasetRefId);
 
         if (!StringUtils.isEmpty(qualifier)) {
-            ontologyAnnotation.setAttribute("qualifier", qualifier);
+            goAnnotation.setAttribute("qualifier", qualifier);
         }
         if (!StringUtils.isEmpty(annotationExtension)) {
-            ontologyAnnotation.setAttribute("annotationExtension", annotationExtension);
+            goAnnotation.setAttribute("annotationExtension", annotationExtension);
         }
 
         if ("gene".equals(productType)) {
-            addProductCollection(productIdentifier, ontologyAnnotation.getIdentifier());
+            addProductCollection(productIdentifier, goAnnotation.getIdentifier());
         }
 
-        Integer storedAnnotationId = store(ontologyAnnotation);
+        Integer storedAnnotationId = store(goAnnotation);
         return storedAnnotationId;
     }
 
-    private void addProductCollection(String productIdentifier, String ontologyAnnotationIdentifier) {
+    private void addProductCollection(String productIdentifier, String goAnnotationIdentifier) {
         Integer storedProductId = storedProductIds.get(productIdentifier);
         List<String> annotationIds = productCollectionsMap.get(storedProductId);
         if (annotationIds == null) {
             annotationIds = new ArrayList<String>();
             productCollectionsMap.put(storedProductId, annotationIds);
         }
-        annotationIds.add(ontologyAnnotationIdentifier);
+        annotationIds.add(goAnnotationIdentifier);
     }
 
     /**

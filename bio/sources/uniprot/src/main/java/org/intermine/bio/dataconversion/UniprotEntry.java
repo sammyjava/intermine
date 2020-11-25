@@ -662,7 +662,7 @@ public class UniprotEntry
     /**
      * @return the goterms
      */
-    public List<String> getOntologyTerms() {
+    public List<String> getGOTerms() {
         List<String> goterms = collections.get("goTerms");
         if (goterms == null) {
             return Collections.emptyList();
@@ -673,7 +673,7 @@ public class UniprotEntry
     /**
      * @param refId id representing a go term object
      */
-    public void addOntologyTerm(String refId) {
+    public void addGOTerm(String refId) {
         addToCollection("goTerms", refId);
     }
 
@@ -681,7 +681,7 @@ public class UniprotEntry
      * @param goTerm go term
      * @return evidence code for this go term
      */
-    public String getOntologyEvidence(String goTerm) {
+    public String getGOEvidence(String goTerm) {
         return goTermToEvidenceCode.get(goTerm);
     }
 
@@ -689,7 +689,7 @@ public class UniprotEntry
      * @param goTerm go term
      * @param code evidence code, eg. NAS
      */
-    public void addOntologyEvidence(String goTerm, String code) {
+    public void addGOEvidence(String goTerm, String code) {
         goTermToEvidenceCode.put(goTerm, code);
     }
 
@@ -712,7 +712,7 @@ public class UniprotEntry
     /**
      * @param goterms list of go term refIds for this protein
      */
-    public void setOntologyTerms(List<String> goterms) {
+    public void setGOTerms(List<String> goterms) {
         collections.put("goTerms", goterms);
     }
 
@@ -945,7 +945,7 @@ public class UniprotEntry
         entry.setProteinNames(collections.get("proteinNames"));
         entry.setGeneNames(geneNames);
         entry.setGeneDesignations(geneDesignationToDbref);
-        entry.setOntologyTerms(collections.get("goTerms"));
+        entry.setGOTerms(collections.get("goTerms"));
         return entry;
     }
 }

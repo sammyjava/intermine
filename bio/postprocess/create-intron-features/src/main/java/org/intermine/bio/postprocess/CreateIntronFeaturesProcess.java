@@ -80,20 +80,12 @@ public class CreateIntronFeaturesProcess extends PostProcessor
         super(osw);
         this.os = osw.getObjectStore();
         this.model = os.getModel();
-	dataSource = (DataSource) DynamicUtil.createObject(Collections.singleton(DataSource.class));
-        dataSource.setName("InterMine post-processor");
+        dataSource = (DataSource) DynamicUtil.createObject(Collections.singleton(DataSource.class));
+        dataSource.setName("InterMine");
         try {
-            DataSource existingDataSource = os.getObjectByExample(dataSource, Collections.singleton("name"));
-	    if (existingDataSource==null) {
-		// store new DataSource
-		osw.store(dataSource);
-	    } else {
-		// use existing DataSource
-		dataSource = existingDataSource;
-	    }
+            dataSource = os.getObjectByExample(dataSource, Collections.singleton("name"));
         } catch (ObjectStoreException e) {
-	    System.err.println(e);
-	    System.exit(1);
+            throw new RuntimeException("unable to fetch IntermMine DataSource object", e);
         }
     }
 
@@ -124,8 +116,8 @@ public class CreateIntronFeaturesProcess extends PostProcessor
             throws ObjectStoreException {
 
         dataSet = (DataSet) DynamicUtil.createObject(Collections.singleton(DataSet.class));
-        dataSet.setName("InterMine introns");
-        dataSet.setDescription("Introns calculated by an InterMine post-processor");
+        dataSet.setName("Calculated introns");
+        dataSet.setDescription("Introns calculated by InterMine post-processing.");
         dataSet.setVersion("" + new Date()); // current time and date
         dataSet.setUrl("http://www.intermine.org");
         dataSet.setDataSource(dataSource);
@@ -342,7 +334,6 @@ public class CreateIntronFeaturesProcess extends PostProcessor
 
                 intron.setChromosome(chr);
                 intron.setOrganism(chr.getOrganism());
-		intron.setStrain(chr.getStrain());
                 intron.addDataSets(dataSet);
                 intron.setPrimaryIdentifier(identifier);
                 intron.setGenes(Collections.singleton(gene));

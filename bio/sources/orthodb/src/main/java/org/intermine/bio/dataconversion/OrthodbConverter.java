@@ -47,7 +47,6 @@ public class OrthodbConverter extends BioFileConverter
     private static final Logger LOG = Logger.getLogger(OrthodbConverter.class);
 
     private static final String DATASET_TITLE = "OrthoDB data set";
-    private static final String DATASET_DESCRIPTION = "OrthoDB data set";
     private static final String DATA_SOURCE_NAME = "OrthoDB";
 
     private static final String PROP_FILE = "orthodb_config.properties";
@@ -78,7 +77,7 @@ public class OrthodbConverter extends BioFileConverter
      * @param model the Model
      */
     public OrthodbConverter(ItemWriter writer, Model model) {
-        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE, DATASET_DESCRIPTION);
+        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE);
         readConfig();
     }
 

@@ -31,7 +31,6 @@ public class MgiIdentifiersConverter extends BioFileConverter
 {
     protected static final Logger LOG = Logger.getLogger(MgiIdentifiersConverter.class);
     private static final String DATASET_TITLE = "Mouse gene identifiers";
-    private static final String DATASET_DESCRIPTION = "Mouse gene identifiers";
     private static final String DATA_SOURCE_NAME = "MGI";
     private static final String NULL_STRING = "null";
 
@@ -41,7 +40,7 @@ public class MgiIdentifiersConverter extends BioFileConverter
      * @param model the Model
      */
     public MgiIdentifiersConverter(ItemWriter writer, Model model) {
-        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE, DATASET_DESCRIPTION);
+        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE);
     }
 
     /**

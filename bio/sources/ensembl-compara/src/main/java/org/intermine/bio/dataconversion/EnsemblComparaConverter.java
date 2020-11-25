@@ -45,7 +45,6 @@ public class EnsemblComparaConverter extends BioFileConverter
     private Set<String> homologues = new HashSet<String>();
     private static final String DATASET_TITLE = "Ensembl Compara data set";
     private static final String DATA_SOURCE_NAME = "Ensembl";
-    private static final String DATASET_DESCRIPTION = "Ensembl Compara data set";
     private Map<String, String> genes = new HashMap<String, String>();
     protected IdResolver rslv = null;
     private Map<String, String> configs = new HashMap<String, String>();
@@ -57,7 +56,7 @@ public class EnsemblComparaConverter extends BioFileConverter
      * @param model the Model
      */
     public EnsemblComparaConverter(ItemWriter writer, Model model) {
-        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE, DATASET_DESCRIPTION);
+        super(writer, model, DATA_SOURCE_NAME, DATASET_TITLE);
         readConfig();
     }
 
